@@ -9,6 +9,12 @@ process.env.BROWSER = 'Brave Browser'
 export default defineConfig({
   server: {
     open: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
   },
   plugins: [
     react({

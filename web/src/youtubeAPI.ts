@@ -1,22 +1,25 @@
-import {
-  mapYouTubeSubscriptionToSubscription,
-  type Subscription,
-  type YouTubeSubscription,
-} from '@youtube-rss/types'
+import type { Subscription } from '@youtube-rss/types'
 
-export const fetchYouTubeSubscriptions = async (token: string): Promise<Subscription[]> => {
+export const fetchYouTubeSubscriptions = async (
+  providerToken: string,
+  userToken: string
+): Promise<Subscription[]> => {
   try {
-    const response = await fetch(
-      'https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&mine=true&maxResults=50',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-    const data = await response.json()
-    const items: YouTubeSubscription[] = data.items || []
-    return items.map(mapYouTubeSubscriptionToSubscription)
+    const response = await fetch('/api/subscriptions/sync', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken}`,
+      },
+      body: JSON.stringify({ providerToken }),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to sync subscriptions')
+    }
+
+    const subscriptions: Subscription[] = await response.json()
+    return subscriptions
   } catch (error) {
     console.error('Error fetching subscriptions:', error)
     return []
