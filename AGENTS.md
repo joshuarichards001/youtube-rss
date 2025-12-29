@@ -26,6 +26,30 @@ A full-stack application to manage and generate RSS feeds from YouTube subscript
 - **`/packages/types`**: Shared TypeScript definitions (Models, API Responses).
 - **`/supabase/public_schema.sql`**: Supabase schema definition.
 
+## Architecture Overview
+
+**Monorepo Structure:**
+This is a pnpm workspace monorepo with three main packages:
+
+- **`/web/src`**: React 19 SPA with Vite build tooling
+- **`/web/src/components`**: UI components organized by feature/domain
+- **`/web/src/helpers`**: API integration helpers
+- **`/web/src/store`**: State management
+- **`/web/src`**: Supabase client for authentication (Google OAuth)
+- Tailwind v4 + DaisyUI for styling
+
+- **`/server/src`**: Express 5 API server (ESM module)
+- **`/server/src/controllers`**: REST endpoint controllers
+- **`/server/src/middleware`**: Auth, error handling, CORS middleware
+- **`/server/src/services`**: Background workers for RSS polling and sync jobs
+- **`/server/src/config`**: Environment configuration management
+
+- **`/packages/types/src`**: TypeScript interfaces and types shared across web/server, API contract definitions (request/response shapes), Domain models (Subscription, YouTubeSubscription, etc.)
+
+**Data Layer:**
+- **`/supabase`**: Supabase schema definitions and RLS policies
+- Supabase for authentication and database
+
 ## Standards & Patterns
 
 **Architectural Style:**

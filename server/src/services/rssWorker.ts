@@ -2,8 +2,8 @@ import type { Subscription } from '@youtube-rss/types';
 import { XMLParser } from 'fast-xml-parser';
 import { supabase } from '../config/supabase.js';
 
-const BATCH_SIZE = 4;
-const DELAY_MS = 5000;
+const BATCH_SIZE = 10;
+const DELAY_MS = 2500;
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -13,7 +13,11 @@ const parser = new XMLParser({
 const fetchRssFeed = async (channelId: string) => {
   const url = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; YouTubeRSS/1.0;)',
+      },
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
