@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
+import { fetchVideos } from '../helpers/supabaseFunctions'
+import { fetchYouTubeSubscriptions } from '../helpers/youtubeAPI'
 import { useAppStore } from '../store/useAppStore'
-import { fetchYouTubeSubscriptions } from './youtubeAPI'
-import { fetchVideos } from './supabaseFunctions'
 
 export const useSubscriptionSync = () => {
   const { session, setSubscriptions, setLoading, setVideos } = useAppStore()

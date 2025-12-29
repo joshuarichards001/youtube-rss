@@ -3,8 +3,8 @@ import LandingPage from './components/LandingPage'
 import { StatusAlert } from './components/StatusAlert'
 import { SubscriptionList } from './components/SubscriptionList'
 import { VideoGrid } from './components/VideoGrid'
-import { useAuth } from './helpers/useAuth'
-import { useSubscriptionSync } from './helpers/useSubscriptionSync'
+import { useAuth } from './hooks/useAuth'
+import { useSubscriptionSync } from './hooks/useSubscriptionSync'
 
 function App() {
   const session = useAuth()
