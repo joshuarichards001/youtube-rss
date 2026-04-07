@@ -5,6 +5,22 @@ import { useAppStore } from "../store/useAppStore";
 
 const isShort = (url: string) => url.includes("/shorts/");
 
+function timeAgo(date: string): string {
+  const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days} day${days !== 1 ? "s" : ""} ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12)
+    return `${months} month${months !== 1 ? "s" : ""} ago`;
+  const years = Math.floor(months / 12);
+  return `${years} year${years !== 1 ? "s" : ""} ago`;
+}
+
 export const VideoGrid = () => {
   const videos = useAppStore((state) => state.videos);
   const loading = useAppStore((state) => state.loading);
@@ -71,15 +87,12 @@ export const VideoGrid = () => {
             className="card bg-base-200 hover:bg-base-100 transition-colors duration-200 rounded-xl overflow-hidden"
           >
             <Link to={`/watch/${video.video_id}`}>
-              <figure className="relative aspect-video">
+              <figure className="aspect-video">
                 <img
                   src={video.video_thumbnail}
                   alt={video.video_title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded">
-                  {new Date(video.published_at).toLocaleDateString()}
-                </div>
               </figure>
             </Link>
             <div className="p-3 flex flex-col gap-1.5">
@@ -90,12 +103,16 @@ export const VideoGrid = () => {
               >
                 {video.video_title}
               </Link>
-              <Link
-                to={`/channel/${video.channel_id}`}
-                className="text-xs text-base-content/50 hover:text-primary transition-colors"
-              >
-                {video.channel_title || "Unknown Channel"}
-              </Link>
+              <div className="flex items-center gap-1.5 text-xs text-base-content/50">
+                <Link
+                  to={`/channel/${video.channel_id}`}
+                  className="hover:text-primary transition-colors"
+                >
+                  {video.channel_title || "Unknown Channel"}
+                </Link>
+                <span>•</span>
+                <span>{timeAgo(video.published_at)}</span>
+              </div>
             </div>
           </div>
         ))}
