@@ -8,8 +8,12 @@ export const HomePage = () => {
     <>
       <StatusAlert />
       <ProgressBar />
-      <VideoGrid />
-      <SubscriptionList />
+      <div className="flex gap-6">
+        <SubscriptionList />
+        <div className="flex-1 min-w-0">
+          <VideoGrid />
+        </div>
+      </div>
     </>
   )
 }
