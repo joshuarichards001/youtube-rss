@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppStore } from "../store/useAppStore";
 
@@ -6,6 +7,14 @@ export const SubscriptionList = () => {
   const loading = useAppStore((state) => state.loading);
   const sidebarOpen = useAppStore((state) => state.sidebarOpen);
   const setSidebarOpen = useAppStore((state) => state.setSidebarOpen);
+  const [search, setSearch] = useState("");
+
+  const filtered = search
+    ? subscriptions.filter((sub) =>
+        sub.title.toLowerCase().includes(search.toLowerCase())
+      )
+    : subscriptions;
+
   const content = (
     <div className="flex flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
@@ -33,8 +42,15 @@ export const SubscriptionList = () => {
           </svg>
         </button>
       </div>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="input input-sm input-bordered w-full"
+      />
       <div className="flex flex-col gap-2 overflow-y-auto">
-        {subscriptions.map((sub) => (
+        {filtered.map((sub) => (
           <Link
             key={sub.id}
             to={`/channel/${sub.channelId}`}
