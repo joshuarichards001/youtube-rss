@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import type { SubscriptionVideoView } from '@youtube-rss/types'
 import { useAppStore } from '../store/useAppStore'
 import { fetchVideosByChannel } from '../helpers/supabaseFunctions'
@@ -11,8 +11,6 @@ export const ChannelPage = () => {
   const subscriptions = useAppStore((state) => state.subscriptions)
   const showShorts = useAppStore((state) => state.showShorts)
   const setShowShorts = useAppStore((state) => state.setShowShorts)
-  const navigate = useNavigate()
-
   const [videos, setVideos] = useState<SubscriptionVideoView[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -67,10 +65,10 @@ export const ChannelPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredVideos.map((video) => (
-            <div
+            <Link
               key={video.video_id}
-              className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200 cursor-pointer"
-              onClick={() => navigate(`/watch/${video.video_id}`)}
+              to={`/watch/${video.video_id}`}
+              className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200"
             >
               <figure className="relative aspect-video">
                 <img
@@ -87,7 +85,7 @@ export const ChannelPage = () => {
                   {video.video_title}
                 </h3>
               </div>
-            </div>
+            </Link>
           ))}
           {filteredVideos.length === 0 && (
             <div className="col-span-full text-center py-10 opacity-50">

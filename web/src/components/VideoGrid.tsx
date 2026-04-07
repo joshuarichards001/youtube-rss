@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { fetchVideos } from '../helpers/supabaseFunctions'
 import { useAppStore } from '../store/useAppStore'
 
@@ -13,7 +13,6 @@ export const VideoGrid = () => {
   const hasMoreVideos = useAppStore((state) => state.hasMoreVideos)
   const appendVideos = useAppStore((state) => state.appendVideos)
   const setHasMoreVideos = useAppStore((state) => state.setHasMoreVideos)
-  const navigate = useNavigate()
   const [loadingMore, setLoadingMore] = useState(false)
   const sentinelRef = useRef<HTMLDivElement>(null)
 
@@ -61,26 +60,27 @@ export const VideoGrid = () => {
         {filteredVideos.map((video) => (
           <div
             key={video.video_id}
-            className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200 cursor-pointer"
-            onClick={() => navigate(`/watch/${video.video_id}`)}
+            className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200"
           >
-            <figure className="relative aspect-video">
-              <img
-                src={video.video_thumbnail}
-                alt={video.video_title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute bottom-2 right-2 badge badge-neutral bg-opacity-80">
-                {new Date(video.published_at).toLocaleDateString()}
-              </div>
-            </figure>
+            <Link to={`/watch/${video.video_id}`}>
+              <figure className="relative aspect-video">
+                <img
+                  src={video.video_thumbnail}
+                  alt={video.video_title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-2 right-2 badge badge-neutral bg-opacity-80">
+                  {new Date(video.published_at).toLocaleDateString()}
+                </div>
+              </figure>
+            </Link>
             <div className="card-body p-4">
-              <div className="badge badge-outline mb-2 text-xs">
+              <Link to={`/channel/${video.channel_id}`} className="badge badge-outline hover:badge-primary transition-colors mb-2 text-xs">
                 {video.channel_title || 'Unknown Channel'}
-              </div>
-              <h3 className="card-title text-base leading-tight line-clamp-2" title={video.video_title}>
+              </Link>
+              <Link to={`/watch/${video.video_id}`} className="card-title text-base leading-tight line-clamp-2" title={video.video_title}>
                 {video.video_title}
-              </h3>
+              </Link>
             </div>
           </div>
         ))}

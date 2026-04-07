@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAppStore } from '../store/useAppStore'
 
 export const SubscriptionList = () => {
@@ -6,8 +6,6 @@ export const SubscriptionList = () => {
   const loading = useAppStore((state) => state.loading)
   const sidebarOpen = useAppStore((state) => state.sidebarOpen)
   const setSidebarOpen = useAppStore((state) => state.setSidebarOpen)
-  const navigate = useNavigate()
-
   const content = (
     <div className="flex flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
@@ -24,13 +22,11 @@ export const SubscriptionList = () => {
       </div>
       <div className="flex flex-col gap-2 overflow-y-auto">
         {subscriptions.map((sub) => (
-          <div
+          <Link
             key={sub.id}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-base-300 transition-colors cursor-pointer"
-            onClick={() => {
-              setSidebarOpen(false)
-              navigate(`/channel/${sub.channelId}`)
-            }}
+            to={`/channel/${sub.channelId}`}
+            className="flex items-center gap-3 p-2 rounded-lg hover:bg-base-300 transition-colors"
+            onClick={() => setSidebarOpen(false)}
           >
             <img
               src={sub.thumbnail}
@@ -38,7 +34,7 @@ export const SubscriptionList = () => {
               className="rounded-full w-8 h-8 shrink-0"
             />
             <p className="text-sm font-medium truncate">{sub.title}</p>
-          </div>
+          </Link>
         ))}
         {loading && (
           <div className="text-center py-4 opacity-50 text-sm">
