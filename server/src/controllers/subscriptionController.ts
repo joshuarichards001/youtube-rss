@@ -201,7 +201,7 @@ export const syncSubscriptions = async (req: AuthRequest, res: Response): Promis
 
     // Fire-and-forget the worker
     if (subscriptionsToRssSync.length > 0) {
-      processSubscriptions(subscriptionsToRssSync).catch((err: unknown) => {
+      processSubscriptions(subscriptionsToRssSync, user.id).catch((err: unknown) => {
         console.error('Error in RSS worker:', err);
       });
     } else {

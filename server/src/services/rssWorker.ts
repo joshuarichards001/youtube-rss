@@ -1,6 +1,7 @@
 import type { Subscription } from '@youtube-rss/types';
 import { XMLParser } from 'fast-xml-parser';
 import { supabase } from '../config/supabase.js';
+import { progressTracker } from './progressTracker.js';
 
 const BATCH_SIZE = 10;
 const DELAY_MS = 2500;
@@ -68,8 +69,17 @@ const fetchRssFeed = async (channelId: string) => {
   }
 };
 
-export const processSubscriptions = async (subscriptions: Subscription[]) => {
-  console.log(`[RSS Worker] Starting to process ${subscriptions.length} subscriptions...`);
+export const processSubscriptions = async (subscriptions: Subscription[], userId: string) => {
+  console.log(`[RSS Worker] Starting to process ${subscriptions.length} subscriptions for user ${userId}...`);
+
+  progressTracker.sendProgress(userId, {
+    status: 'starting',
+    total: subscriptions.length,
+    processed: 0,
+    message: 'Starting feed synchronization...'
+  });
+
+  let processedCount = 0;
 
   for (let i = 0; i < subscriptions.length; i += BATCH_SIZE) {
     const batch = subscriptions.slice(i, i + BATCH_SIZE);
@@ -79,12 +89,27 @@ export const processSubscriptions = async (subscriptions: Subscription[]) => {
     // Process batch in parallel
     await Promise.all(batch.map(sub => fetchRssFeed(sub.channelId)));
 
+    processedCount += batch.length;
+
+    progressTracker.sendProgress(userId, {
+      status: 'progress',
+      total: subscriptions.length,
+      processed: processedCount,
+      message: `Processed ${processedCount} of ${subscriptions.length} feeds`
+    });
+
     // Wait before next batch if there are more items
     if (i + BATCH_SIZE < subscriptions.length) {
-      console.log(`[RSS Worker] Waiting ${DELAY_MS}ms...`);
       await new Promise(resolve => setTimeout(resolve, DELAY_MS));
     }
   }
+
+  progressTracker.sendProgress(userId, {
+    status: 'completed',
+    total: subscriptions.length,
+    processed: processedCount,
+    message: 'Sync completed!'
+  });
 
   console.log('[RSS Worker] Finished processing all subscriptions.');
 };
