@@ -1,16 +1,33 @@
 import { useNavigate } from 'react-router-dom'
 import { useAppStore } from '../store/useAppStore'
 
+const isShort = (url: string) => url.includes('/shorts/')
+
 export const VideoGrid = () => {
   const videos = useAppStore((state) => state.videos)
   const loading = useAppStore((state) => state.loading)
+  const showShorts = useAppStore((state) => state.showShorts)
+  const setShowShorts = useAppStore((state) => state.setShowShorts)
   const navigate = useNavigate()
+
+  const filteredVideos = showShorts ? videos : videos.filter((v) => !isShort(v.video_url))
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4">Recent Videos</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-semibold">Recent Videos</h2>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <span className="text-sm">Show Shorts</span>
+          <input
+            type="checkbox"
+            className="toggle toggle-sm"
+            checked={showShorts}
+            onChange={(e) => setShowShorts(e.target.checked)}
+          />
+        </label>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {videos.map((video) => (
+        {filteredVideos.map((video) => (
           <div
             key={video.video_id}
             className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200 cursor-pointer"
@@ -41,7 +58,7 @@ export const VideoGrid = () => {
             </div>
           </div>
         ))}
-        {videos.length === 0 && !loading && (
+        {filteredVideos.length === 0 && !loading && (
           <div className="col-span-full text-center py-10 opacity-50">
             No videos found. Subscriptions might still be syncing.
           </div>
