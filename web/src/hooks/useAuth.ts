@@ -3,11 +3,12 @@ import { supabase } from '../helpers/supabaseClient'
 import { useAppStore } from '../store/useAppStore'
 
 export const useAuth = () => {
-  const { session, setSession } = useAppStore()
+  const { session, setSession, setAuthLoaded } = useAppStore()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      setAuthLoaded(true)
     })
 
     const {
@@ -17,7 +18,7 @@ export const useAuth = () => {
     })
 
     return () => subscription.unsubscribe()
-  }, [setSession])
+  }, [setSession, setAuthLoaded])
 
   return session
 }
