@@ -25,10 +25,7 @@ export const useSubscriptionSync = () => {
       }
 
       // Pass token in query param for EventSource
-      const url = new URL(
-        "/api/sse",
-        import.meta.env.VITE_API_URL || "http://localhost:3000",
-      );
+      const url = new URL("/api/sse", window.location.origin);
       url.searchParams.append("token", session.access_token);
 
       const es = new EventSource(url.toString());

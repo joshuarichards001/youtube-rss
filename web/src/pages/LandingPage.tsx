@@ -7,6 +7,7 @@ export default function LandingPage() {
         provider: "google",
         options: {
           scopes: "https://www.googleapis.com/auth/youtube.readonly",
+          redirectTo: `${window.location.origin}/`,
         },
       });
       if (error) throw error;
