@@ -1,46 +1,54 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { fetchVideos } from '../helpers/supabaseFunctions'
-import { useAppStore } from '../store/useAppStore'
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { fetchVideos } from "../helpers/supabaseFunctions";
+import { useAppStore } from "../store/useAppStore";
 
-const isShort = (url: string) => url.includes('/shorts/')
+const isShort = (url: string) => url.includes("/shorts/");
 
 export const VideoGrid = () => {
-  const videos = useAppStore((state) => state.videos)
-  const loading = useAppStore((state) => state.loading)
-  const showShorts = useAppStore((state) => state.showShorts)
-  const setShowShorts = useAppStore((state) => state.setShowShorts)
-  const hasMoreVideos = useAppStore((state) => state.hasMoreVideos)
-  const appendVideos = useAppStore((state) => state.appendVideos)
-  const setHasMoreVideos = useAppStore((state) => state.setHasMoreVideos)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const sentinelRef = useRef<HTMLDivElement>(null)
+  const videos = useAppStore((state) => state.videos);
+  const loading = useAppStore((state) => state.loading);
+  const showShorts = useAppStore((state) => state.showShorts);
+  const setShowShorts = useAppStore((state) => state.setShowShorts);
+  const hasMoreVideos = useAppStore((state) => state.hasMoreVideos);
+  const appendVideos = useAppStore((state) => state.appendVideos);
+  const setHasMoreVideos = useAppStore((state) => state.setHasMoreVideos);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const loadMore = useCallback(async () => {
-    if (loadingMore || !hasMoreVideos) return
-    setLoadingMore(true)
-    const newVideos = await fetchVideos(videos.length)
-    if (newVideos.length < 50) setHasMoreVideos(false)
-    appendVideos(newVideos)
-    setLoadingMore(false)
-  }, [loadingMore, hasMoreVideos, videos.length, appendVideos, setHasMoreVideos])
+    if (loadingMore || !hasMoreVideos) return;
+    setLoadingMore(true);
+    const newVideos = await fetchVideos(videos.length);
+    if (newVideos.length < 50) setHasMoreVideos(false);
+    appendVideos(newVideos);
+    setLoadingMore(false);
+  }, [
+    loadingMore,
+    hasMoreVideos,
+    videos.length,
+    appendVideos,
+    setHasMoreVideos,
+  ]);
 
   useEffect(() => {
-    const sentinel = sentinelRef.current
-    if (!sentinel) return
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) loadMore()
+        if (entries[0].isIntersecting) loadMore();
       },
-      { rootMargin: '200px' },
-    )
+      { rootMargin: "200px" },
+    );
 
-    observer.observe(sentinel)
-    return () => observer.disconnect()
-  }, [loadMore])
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
-  const filteredVideos = showShorts ? videos : videos.filter((v) => !isShort(v.video_url))
+  const filteredVideos = showShorts
+    ? videos
+    : videos.filter((v) => !isShort(v.video_url));
 
   return (
     <div>
@@ -60,7 +68,7 @@ export const VideoGrid = () => {
         {filteredVideos.map((video) => (
           <div
             key={video.video_id}
-            className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-200"
+            className="card bg-base-200 hover:bg-base-100 transition-colors duration-200 rounded-xl overflow-hidden"
           >
             <Link to={`/watch/${video.video_id}`}>
               <figure className="relative aspect-video">
@@ -69,17 +77,24 @@ export const VideoGrid = () => {
                   alt={video.video_title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-2 right-2 badge badge-neutral bg-opacity-80">
+                <div className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded">
                   {new Date(video.published_at).toLocaleDateString()}
                 </div>
               </figure>
             </Link>
-            <div className="card-body p-4">
-              <Link to={`/channel/${video.channel_id}`} className="badge badge-outline hover:badge-primary transition-colors mb-2 text-xs">
-                {video.channel_title || 'Unknown Channel'}
-              </Link>
-              <Link to={`/watch/${video.video_id}`} className="card-title text-base leading-tight line-clamp-2" title={video.video_title}>
+            <div className="p-3 flex flex-col gap-1.5">
+              <Link
+                to={`/watch/${video.video_id}`}
+                className="font-medium text-sm leading-snug line-clamp-2 hover:text-primary transition-colors"
+                title={video.video_title}
+              >
                 {video.video_title}
+              </Link>
+              <Link
+                to={`/channel/${video.channel_id}`}
+                className="text-xs text-base-content/50 hover:text-primary transition-colors"
+              >
+                {video.channel_title || "Unknown Channel"}
               </Link>
             </div>
           </div>
@@ -97,5 +112,5 @@ export const VideoGrid = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};

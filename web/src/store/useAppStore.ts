@@ -1,27 +1,32 @@
-import type { Session } from '@supabase/supabase-js'
-import type { Subscription, SubscriptionVideoView } from '@youtube-rss/types'
-import { create } from 'zustand'
+import type { Session } from "@supabase/supabase-js";
+import type { Subscription, SubscriptionVideoView } from "@youtube-rss/types";
+import { create } from "zustand";
 
 interface AppState {
-  session: Session | null
-  authLoaded: boolean
-  subscriptions: Subscription[]
-  videos: SubscriptionVideoView[]
-  loading: boolean
-  showShorts: boolean
-  progress: { status: 'idle' | 'starting' | 'progress' | 'completed' | 'error'; processed: number; total: number; message: string }
-  setSession: (session: Session | null) => void
-  setAuthLoaded: (loaded: boolean) => void
-  setSubscriptions: (subscriptions: Subscription[]) => void
-  setVideos: (videos: SubscriptionVideoView[]) => void
-  setLoading: (loading: boolean) => void
-  setShowShorts: (showShorts: boolean) => void
-  hasMoreVideos: boolean
-  setHasMoreVideos: (hasMore: boolean) => void
-  appendVideos: (videos: SubscriptionVideoView[]) => void
-  sidebarOpen: boolean
-  setSidebarOpen: (open: boolean) => void
-  setProgress: (progress: AppState['progress']) => void
+  session: Session | null;
+  authLoaded: boolean;
+  subscriptions: Subscription[];
+  videos: SubscriptionVideoView[];
+  loading: boolean;
+  showShorts: boolean;
+  progress: {
+    status: "idle" | "starting" | "progress" | "completed" | "error";
+    processed: number;
+    total: number;
+    message: string;
+  };
+  setSession: (session: Session | null) => void;
+  setAuthLoaded: (loaded: boolean) => void;
+  setSubscriptions: (subscriptions: Subscription[]) => void;
+  setVideos: (videos: SubscriptionVideoView[]) => void;
+  setLoading: (loading: boolean) => void;
+  setShowShorts: (showShorts: boolean) => void;
+  hasMoreVideos: boolean;
+  setHasMoreVideos: (hasMore: boolean) => void;
+  appendVideos: (videos: SubscriptionVideoView[]) => void;
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  setProgress: (progress: AppState["progress"]) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -33,9 +38,10 @@ export const useAppStore = create<AppState>((set) => ({
   showShorts: false,
   hasMoreVideos: true,
   setHasMoreVideos: (hasMoreVideos) => set({ hasMoreVideos }),
-  appendVideos: (newVideos) => set((state) => ({ videos: [...state.videos, ...newVideos] })),
+  appendVideos: (newVideos) =>
+    set((state) => ({ videos: [...state.videos, ...newVideos] })),
   sidebarOpen: false,
-  progress: { status: 'idle', processed: 0, total: 0, message: '' },
+  progress: { status: "idle", processed: 0, total: 0, message: "" },
   setSession: (session) => set({ session }),
   setAuthLoaded: (authLoaded) => set({ authLoaded }),
   setSubscriptions: (subscriptions) => set({ subscriptions }),
@@ -44,4 +50,4 @@ export const useAppStore = create<AppState>((set) => ({
   setShowShorts: (showShorts) => set({ showShorts }),
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
   setProgress: (progress) => set({ progress }),
-}))
+}));

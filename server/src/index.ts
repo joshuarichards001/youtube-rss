@@ -1,7 +1,7 @@
-import cors from 'cors';
-import dotenv from 'dotenv';
-import express from 'express';
-import routes from './routes/routes.js';
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import routes from "./routes/routes.js";
 
 dotenv.config();
 
@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api', routes);
+app.use("/api", routes);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

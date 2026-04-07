@@ -1,23 +1,23 @@
-import { supabase } from "../helpers/supabaseClient"
+import { supabase } from "../helpers/supabaseClient";
 
 export default function LandingPage() {
   const handleLogin = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
-          scopes: 'https://www.googleapis.com/auth/youtube.readonly',
+          scopes: "https://www.googleapis.com/auth/youtube.readonly",
         },
-      })
-      if (error) throw error
+      });
+      if (error) throw error;
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message)
+        alert(error.message);
       } else {
-        alert('An unknown error occurred')
+        alert("An unknown error occurred");
       }
     }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-base-200 px-4">
@@ -32,9 +32,10 @@ export default function LandingPage() {
         <div className="bg-base-100 rounded-box shadow-lg p-8 mb-6">
           <h2 className="text-2xl font-semibold mb-4">What is this?</h2>
           <p className="text-base-content/80 mb-6 leading-relaxed">
-            YouTube RSS Manager syncs your YouTube subscriptions and generates custom RSS feeds,
-            giving you full control over how you consume content. Stay up-to-date with your
-            favorite creators without the algorithm deciding what you see.
+            YouTube RSS Manager syncs your YouTube subscriptions and generates
+            custom RSS feeds, giving you full control over how you consume
+            content. Stay up-to-date with your favorite creators without the
+            algorithm deciding what you see.
           </p>
 
           <h3 className="text-lg font-semibold mb-3">Features</h3>
@@ -62,5 +63,5 @@ export default function LandingPage() {
         </p>
       </div>
     </div>
-  )
+  );
 }

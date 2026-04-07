@@ -1,4 +1,4 @@
-import type { Response } from 'express';
+import type { Response } from "express";
 
 class ProgressTracker {
   private connections: Map<string, Set<Response>> = new Map();
@@ -9,10 +9,12 @@ class ProgressTracker {
     }
     this.connections.get(userId)?.add(res);
 
-    console.log(`[SSE] Added connection for user ${userId}. Total connections: ${this.connections.get(userId)?.size}`);
+    console.log(
+      `[SSE] Added connection for user ${userId}. Total connections: ${this.connections.get(userId)?.size}`,
+    );
 
     // Clean up on close
-    res.on('close', () => {
+    res.on("close", () => {
       this.removeConnection(userId, res);
     });
   }
@@ -28,7 +30,15 @@ class ProgressTracker {
     console.log(`[SSE] Removed connection for user ${userId}`);
   }
 
-  sendProgress(userId: string, data: { status: 'starting' | 'progress' | 'completed' | 'error'; processed?: number; total?: number; message?: string }) {
+  sendProgress(
+    userId: string,
+    data: {
+      status: "starting" | "progress" | "completed" | "error";
+      processed?: number;
+      total?: number;
+      message?: string;
+    },
+  ) {
     const userConns = this.connections.get(userId);
     if (!userConns) return;
 

@@ -1,22 +1,35 @@
-import { Link } from 'react-router-dom'
-import { useAppStore } from '../store/useAppStore'
+import { Link } from "react-router-dom";
+import { useAppStore } from "../store/useAppStore";
 
 export const SubscriptionList = () => {
-  const subscriptions = useAppStore((state) => state.subscriptions)
-  const loading = useAppStore((state) => state.loading)
-  const sidebarOpen = useAppStore((state) => state.sidebarOpen)
-  const setSidebarOpen = useAppStore((state) => state.setSidebarOpen)
+  const subscriptions = useAppStore((state) => state.subscriptions);
+  const loading = useAppStore((state) => state.loading);
+  const sidebarOpen = useAppStore((state) => state.sidebarOpen);
+  const setSidebarOpen = useAppStore((state) => state.setSidebarOpen);
   const content = (
     <div className="flex flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Subscriptions ({subscriptions.length})</h2>
+        <h2 className="text-sm font-semibold text-base-content/70 uppercase tracking-wide">
+          Subs ({subscriptions.length})
+        </h2>
         <button
           className="btn btn-ghost btn-square btn-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-label="Close subscriptions"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -43,12 +56,12 @@ export const SubscriptionList = () => {
         )}
       </div>
     </div>
-  )
+  );
 
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:block w-64 shrink-0 bg-base-200 rounded-xl overflow-y-auto self-start sticky top-6 max-h-[calc(100vh-3rem)]">
+      <aside className="hidden lg:block w-56 shrink-0 bg-base-200 rounded-xl overflow-y-auto self-start sticky top-6 max-h-[calc(100vh-3rem)]">
         {content}
       </aside>
 
@@ -65,5 +78,5 @@ export const SubscriptionList = () => {
         </div>
       )}
     </>
-  )
-}
+  );
+};

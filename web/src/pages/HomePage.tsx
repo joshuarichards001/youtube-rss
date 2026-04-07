@@ -1,6 +1,6 @@
-import { ProgressBar } from '../components/ProgressBar'
-import { StatusAlert } from '../components/StatusAlert'
-import { VideoGrid } from '../components/VideoGrid'
+import { ProgressBar } from "../components/ProgressBar";
+import { StatusAlert } from "../components/StatusAlert";
+import { VideoGrid } from "../components/VideoGrid";
 
 export const HomePage = () => {
   return (
@@ -9,5 +9,5 @@ export const HomePage = () => {
       <ProgressBar />
       <VideoGrid />
     </>
-  )
-}
+  );
+};

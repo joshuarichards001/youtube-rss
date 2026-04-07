@@ -1,21 +1,29 @@
-import type { NextFunction, Request, Response } from 'express';
-import { supabase } from '../config/supabase.js';
+import type { NextFunction, Request, Response } from "express";
+import { supabase } from "../config/supabase.js";
 
 export interface AuthRequest extends Request {
   user?: any;
 }
 
-export const authenticateUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization?.split(' ')[1] || (req.query.token as string);
+export const authenticateUser = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const token =
+    req.headers.authorization?.split(" ")[1] || (req.query.token as string);
   if (!token) {
-    res.status(401).json({ error: 'No token provided' });
+    res.status(401).json({ error: "No token provided" });
     return;
   }
 
-  const { data: { user }, error } = await supabase.auth.getUser(token);
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser(token);
 
   if (error || !user) {
-    res.status(401).json({ error: 'Invalid token' });
+    res.status(401).json({ error: "Invalid token" });
     return;
   }
 
