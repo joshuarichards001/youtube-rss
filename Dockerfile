@@ -9,6 +9,8 @@ RUN pnpm install --frozen-lockfile
 
 # --- Build server + web ---
 FROM deps AS build
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
 COPY tsconfig.json ./
 COPY src/ ./src/
 COPY web/ ./web/
