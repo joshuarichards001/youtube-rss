@@ -6,18 +6,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 pnpm install              # Install dependencies (strict pnpm only, never npm/yarn)
-pnpm dev                  # Start all services in parallel (web:5173, server:3000)
-pnpm build                # Build all packages
-pnpm lint                 # ESLint across workspace
+pnpm dev                  # Start server (3000) + Vite dev server (5173) in parallel
+pnpm dev:server           # Start only the Express server
+pnpm dev:web              # Start only the Vite dev server
+pnpm build                # Build server (tsc) + web (vite)
+pnpm lint                 # ESLint across web/
 ```
-
-Individual packages can be run with `pnpm --filter <package> <script>` (e.g. `pnpm --filter server dev`).
 
 The server uses `tsx watch` for dev, so changes auto-reload. The web app uses Vite (via rolldown-vite).
 
 ## Architecture
 
-**Monorepo** (pnpm workspaces): `web`, `server`, `packages/types`.
+**Single project** with server code in `src/` and frontend code in `web/`.
+
+- `src/` — Express server (Node/TypeScript, ESM)
+- `web/` — React frontend (Vite + React 19)
+- Types are defined locally in `src/types.ts` (server) and `web/src/types.ts` (web), duplicated intentionally to avoid coupling.
 
 ### Data Flow
 
@@ -30,9 +34,9 @@ The server uses `tsx watch` for dev, so changes auto-reload. The web app uses Vi
 ### Key Patterns
 
 - **State**: Single Zustand store (`web/src/store/useAppStore.ts`) holds session, subscriptions, videos, sync progress, and UI state.
-- **Auth middleware**: `server/src/middleware/auth.ts` validates Supabase JWT (from `Authorization` header or `token` query param for SSE).
-- **Shared types**: `@youtube-rss/types` defines domain models and Supabase row types. Update this package first when changing API contracts.
+- **Auth middleware**: `src/middleware/auth.ts` validates Supabase JWT (from `Authorization` header or `token` query param for SSE).
 - **Server uses `.js` extensions** in imports (ESM requirement with `tsx`), e.g. `import { supabase } from "../config/supabase.js"`.
+- **Static serving**: In production, the server serves the built web app from `web/dist`.
 
 ### Database (Supabase)
 
@@ -43,7 +47,7 @@ Schema defined in `/supabase/public_schema.sql`.
 ## Standards
 
 - Use `async/await`, not raw Promises.
-- Use `@youtube-rss/types` workspace package for shared types — never import directly from `packages/types/src`.
+- Keep types in `src/types.ts` (server) and `web/src/types.ts` (web). Duplicate where needed.
 - Avoid `any` unless strictly necessary (and commented).
 - Tailwind v4 + DaisyUI for styling. React Router v7 for routing.
 
@@ -51,4 +55,3 @@ Schema defined in `/supabase/public_schema.sql`.
 
 - Adding new heavy dependencies.
 - Modifying Supabase schema or RLS policies.
-- Creating new shared packages in `/packages`.

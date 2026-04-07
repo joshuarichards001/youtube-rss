@@ -1,5 +1,5 @@
 import type { Session } from "@supabase/supabase-js";
-import type { Subscription, SubscriptionVideoView } from "@youtube-rss/types";
+import type { Subscription, SubscriptionVideoView } from "../types";
 import { create } from "zustand";
 
 interface AppState {

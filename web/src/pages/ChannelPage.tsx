@@ -1,4 +1,4 @@
-import type { SubscriptionVideoView } from "@youtube-rss/types";
+import type { SubscriptionVideoView } from "../types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { fetchVideosByChannel } from "../helpers/supabaseFunctions";

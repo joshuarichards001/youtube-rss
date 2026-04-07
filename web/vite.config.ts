@@ -7,6 +7,7 @@ process.env.BROWSER = 'Brave Browser'
 
 // https://vite.dev/config/
 export default defineConfig({
+  root: import.meta.dirname,
   server: {
     open: true,
     proxy: {

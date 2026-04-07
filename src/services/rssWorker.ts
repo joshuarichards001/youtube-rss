@@ -1,4 +1,4 @@
-import type { Subscription } from "@youtube-rss/types";
+import type { Subscription } from "../types.js";
 import { XMLParser } from "fast-xml-parser";
 import { supabase } from "../config/supabase.js";
 import { progressTracker } from "./progressTracker.js";

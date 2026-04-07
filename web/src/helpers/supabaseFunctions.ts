@@ -1,4 +1,4 @@
-import type { SubscriptionVideoView } from "@youtube-rss/types";
+import type { SubscriptionVideoView } from "../types";
 import { supabase } from "./supabaseClient";
 
 export const fetchVideosByChannel = async (

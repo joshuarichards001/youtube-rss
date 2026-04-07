@@ -18,7 +18,7 @@ app.use("/api", routes);
 
 // Serve static frontend in production
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const clientDistPath = path.join(__dirname, "../../web/dist");
+const clientDistPath = path.join(__dirname, "../web/dist");
 app.use(express.static(clientDistPath));
 app.get("/{*path}", (_req, res) => {
   res.sendFile(path.join(clientDistPath, "index.html"));

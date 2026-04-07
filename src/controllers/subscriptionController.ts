@@ -2,7 +2,7 @@ import {
   mapYouTubeSubscriptionToSubscription,
   type Subscription,
   type YouTubeSubscription,
-} from "@youtube-rss/types";
+} from "../types.js";
 import type { Request, Response } from "express";
 import { supabase } from "../config/supabase.js";
 import { processSubscriptions } from "../services/rssWorker.js";

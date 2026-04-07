@@ -1,4 +1,4 @@
-import type { Subscription } from "@youtube-rss/types";
+import type { Subscription } from "../types";
 
 export const fetchYouTubeSubscriptions = async (
   providerToken: string,
