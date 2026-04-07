@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { Header } from './components/Header'
+import { SubscriptionList } from './components/SubscriptionList'
 import LandingPage from './pages/LandingPage'
 import { useAuth } from './hooks/useAuth'
 import { useSubscriptionSync } from './hooks/useSubscriptionSync'
@@ -18,7 +19,12 @@ function AuthenticatedLayout() {
   return (
     <div className="p-4 flex flex-col gap-8 mx-auto">
       <Header email={session.user.email} />
-      <Outlet />
+      <div className="flex gap-6 items-start">
+        <SubscriptionList />
+        <div className="flex-1 min-w-0">
+          <Outlet />
+        </div>
+      </div>
     </div>
   )
 }
@@ -33,7 +39,12 @@ function RootRoute() {
   return (
     <div className="p-4 flex flex-col gap-8 mx-auto">
       <Header email={session.user.email} />
-      <HomePage />
+      <div className="flex gap-6 items-start">
+        <SubscriptionList />
+        <div className="flex-1 min-w-0">
+          <HomePage />
+        </div>
+      </div>
     </div>
   )
 }
