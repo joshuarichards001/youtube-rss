@@ -8,6 +8,7 @@ interface AppState {
   subscriptions: Subscription[];
   videos: SubscriptionVideoView[];
   loading: boolean;
+  syncing: boolean;
   showShorts: boolean;
   progress: {
     status: "idle" | "starting" | "progress" | "completed" | "error";
@@ -20,6 +21,7 @@ interface AppState {
   setSubscriptions: (subscriptions: Subscription[]) => void;
   setVideos: (videos: SubscriptionVideoView[]) => void;
   setLoading: (loading: boolean) => void;
+  setSyncing: (syncing: boolean) => void;
   setShowShorts: (showShorts: boolean) => void;
   hasMoreVideos: boolean;
   setHasMoreVideos: (hasMore: boolean) => void;
@@ -27,6 +29,8 @@ interface AppState {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   setProgress: (progress: AppState["progress"]) => void;
+  syncSubscriptions: (() => Promise<void>) | null;
+  setSyncSubscriptions: (fn: () => Promise<void>) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -35,6 +39,7 @@ export const useAppStore = create<AppState>((set) => ({
   subscriptions: [],
   videos: [],
   loading: false,
+  syncing: false,
   showShorts: false,
   hasMoreVideos: true,
   setHasMoreVideos: (hasMoreVideos) => set({ hasMoreVideos }),
@@ -47,7 +52,10 @@ export const useAppStore = create<AppState>((set) => ({
   setSubscriptions: (subscriptions) => set({ subscriptions }),
   setVideos: (videos) => set({ videos }),
   setLoading: (loading) => set({ loading }),
+  setSyncing: (syncing) => set({ syncing }),
   setShowShorts: (showShorts) => set({ showShorts }),
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
   setProgress: (progress) => set({ progress }),
+  syncSubscriptions: null,
+  setSyncSubscriptions: (fn) => set({ syncSubscriptions: fn }),
 }));

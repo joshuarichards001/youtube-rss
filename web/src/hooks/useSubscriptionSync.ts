@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { fetchVideos } from "../helpers/supabaseFunctions";
+import { useCallback, useEffect, useRef } from "react";
+import { fetchSubscriptions, fetchVideos } from "../helpers/supabaseFunctions";
 import { fetchYouTubeSubscriptions } from "../helpers/youtubeAPI";
 import { useAppStore } from "../store/useAppStore";
 
@@ -8,11 +8,12 @@ export const useSubscriptionSync = () => {
     session,
     setSubscriptions,
     setLoading,
+    setSyncing,
+    setSyncSubscriptions,
     setVideos,
     setProgress,
     setHasMoreVideos,
   } = useAppStore();
-  const lastSyncedToken = useRef<string | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
 
   // Setup SSE Connection
@@ -24,7 +25,6 @@ export const useSubscriptionSync = () => {
         eventSourceRef.current.close();
       }
 
-      // Pass token in query param for EventSource
       const url = new URL("/api/sse", window.location.origin);
       url.searchParams.append("token", session.access_token);
 
@@ -71,25 +71,48 @@ export const useSubscriptionSync = () => {
     };
   }, [session, setProgress, setVideos]);
 
-  // Trigger Sync
+  // Load subscriptions from Supabase on session ready
   useEffect(() => {
-    const currentToken = session?.provider_token;
-    if (
-      currentToken &&
-      session?.access_token &&
-      currentToken !== lastSyncedToken.current
-    ) {
-      lastSyncedToken.current = currentToken;
-      setLoading(true);
-      fetchYouTubeSubscriptions(currentToken, session.access_token)
-        .then((subs) => {
-          setSubscriptions(subs);
-          fetchVideos().then((vids) => {
-            setVideos(vids);
-            setHasMoreVideos(vids.length === 50);
-          });
-        })
-        .finally(() => setLoading(false));
+    if (!session?.access_token) return;
+
+    setLoading(true);
+    Promise.all([fetchSubscriptions(), fetchVideos()])
+      .then(([subs, vids]) => {
+        setSubscriptions(subs);
+        setVideos(vids);
+        setHasMoreVideos(vids.length === 50);
+      })
+      .finally(() => setLoading(false));
+  }, [
+    session?.access_token,
+    setSubscriptions,
+    setLoading,
+    setVideos,
+    setHasMoreVideos,
+  ]);
+
+  // Explicit sync triggered by user
+  const syncSubscriptions = useCallback(async () => {
+    const providerToken = session?.provider_token;
+    if (!providerToken || !session?.access_token) return;
+
+    setSyncing(true);
+    try {
+      const subs = await fetchYouTubeSubscriptions(
+        providerToken,
+        session.access_token,
+      );
+      setSubscriptions(subs);
+      const vids = await fetchVideos();
+      setVideos(vids);
+      setHasMoreVideos(vids.length === 50);
+    } finally {
+      setSyncing(false);
     }
-  }, [session, setSubscriptions, setLoading, setVideos]);
+  }, [session, setSubscriptions, setSyncing, setVideos, setHasMoreVideos]);
+
+  // Register sync function on the store so other components can call it
+  useEffect(() => {
+    setSyncSubscriptions(syncSubscriptions);
+  }, [syncSubscriptions, setSyncSubscriptions]);
 };

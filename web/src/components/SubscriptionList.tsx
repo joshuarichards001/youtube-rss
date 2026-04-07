@@ -5,13 +5,15 @@ import { useAppStore } from "../store/useAppStore";
 export const SubscriptionList = () => {
   const subscriptions = useAppStore((state) => state.subscriptions);
   const loading = useAppStore((state) => state.loading);
+  const syncing = useAppStore((state) => state.syncing);
+  const syncSubscriptions = useAppStore((state) => state.syncSubscriptions);
   const sidebarOpen = useAppStore((state) => state.sidebarOpen);
   const setSidebarOpen = useAppStore((state) => state.setSidebarOpen);
   const [search, setSearch] = useState("");
 
   const filtered = search
     ? subscriptions.filter((sub) =>
-        sub.title.toLowerCase().includes(search.toLowerCase())
+        sub.title.toLowerCase().includes(search.toLowerCase()),
       )
     : subscriptions;
 
@@ -21,26 +23,53 @@ export const SubscriptionList = () => {
         <h2 className="text-sm font-semibold text-base-content/70 uppercase tracking-wide">
           Subs ({subscriptions.length})
         </h2>
-        <button
-          className="btn btn-ghost btn-square btn-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-          aria-label="Close subscriptions"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div className="flex items-center gap-1">
+          <button
+            className="btn btn-ghost btn-square btn-sm"
+            onClick={() => syncSubscriptions?.()}
+            disabled={syncing || !syncSubscriptions}
+            title="Sync subscriptions from YouTube"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+            {syncing ? (
+              <span className="loading loading-spinner loading-xs" />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            )}
+          </button>
+          <button
+            className="btn btn-ghost btn-square btn-sm lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close subscriptions"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
       <input
         type="text"
