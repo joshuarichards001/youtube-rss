@@ -50,11 +50,6 @@ export const VideoGrid = () => {
               <h3 className="card-title text-base leading-tight line-clamp-2" title={video.video_title}>
                 {video.video_title}
               </h3>
-              <div className="card-actions justify-end mt-4">
-                <button className="btn btn-primary btn-sm w-full">
-                  Watch Now
-                </button>
-              </div>
             </div>
           </div>
         ))}

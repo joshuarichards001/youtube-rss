@@ -34,9 +34,9 @@ export const WatchPage = () => {
       </div>
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold">{video.video_title}</h1>
-        <div className="badge badge-outline">
+        <Link to={`/channel/${video.channel_id}`} className="badge badge-outline hover:badge-primary transition-colors">
           {video.channel_title || 'Unknown Channel'}
-        </div>
+        </Link>
         <p className="text-sm opacity-60">
           Published {new Date(video.published_at).toLocaleDateString()}
         </p>

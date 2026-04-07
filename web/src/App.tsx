@@ -6,6 +6,7 @@ import { useSubscriptionSync } from './hooks/useSubscriptionSync'
 import { useAppStore } from './store/useAppStore'
 import { HomePage } from './pages/HomePage'
 import { WatchPage } from './pages/WatchPage'
+import { ChannelPage } from './pages/ChannelPage'
 
 function AuthenticatedLayout() {
   const session = useAppStore((state) => state.session)
@@ -52,6 +53,7 @@ function App() {
         <Route path="/" element={<RootRoute />} />
         <Route element={<AuthenticatedLayout />}>
           <Route path="/watch/:videoId" element={<WatchPage />} />
+          <Route path="/channel/:channelId" element={<ChannelPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

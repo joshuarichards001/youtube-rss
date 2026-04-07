@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useAppStore } from '../store/useAppStore'
 
 export const SubscriptionList = () => {
@@ -5,6 +6,7 @@ export const SubscriptionList = () => {
   const loading = useAppStore((state) => state.loading)
   const sidebarOpen = useAppStore((state) => state.sidebarOpen)
   const setSidebarOpen = useAppStore((state) => state.setSidebarOpen)
+  const navigate = useNavigate()
 
   const content = (
     <div className="flex flex-col gap-3 p-4">
@@ -22,7 +24,14 @@ export const SubscriptionList = () => {
       </div>
       <div className="flex flex-col gap-2 overflow-y-auto">
         {subscriptions.map((sub) => (
-          <div key={sub.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-base-300 transition-colors">
+          <div
+            key={sub.id}
+            className="flex items-center gap-3 p-2 rounded-lg hover:bg-base-300 transition-colors cursor-pointer"
+            onClick={() => {
+              setSidebarOpen(false)
+              navigate(`/channel/${sub.channelId}`)
+            }}
+          >
             <img
               src={sub.thumbnail}
               alt={sub.title}
