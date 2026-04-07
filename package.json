@@ -12,7 +12,8 @@
     "build:server": "tsc",
     "build:web": "vite build --config web/vite.config.ts",
     "start": "node dist/index.js",
-    "lint": "eslint web/"
+    "lint": "eslint web/",
+    "refresh-feeds": "tsx src/cron/refreshFeeds.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.x.x",

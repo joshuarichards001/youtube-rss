@@ -11,7 +11,7 @@ const parser = new XMLParser({
   attributeNamePrefix: "@_",
 });
 
-const fetchRssFeed = async (channelId: string) => {
+export const fetchRssFeed = async (channelId: string) => {
   const url = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
   try {
     const response = await fetch(url, {
