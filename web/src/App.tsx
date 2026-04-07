@@ -16,7 +16,7 @@ function AuthenticatedLayout() {
   }
 
   return (
-    <div className="p-4 flex flex-col gap-8 max-w-7xl mx-auto">
+    <div className="p-4 flex flex-col gap-8 mx-auto">
       <Header email={session.user.email} />
       <Outlet />
     </div>
@@ -31,7 +31,7 @@ function RootRoute() {
   }
 
   return (
-    <div className="p-4 flex flex-col gap-8 max-w-7xl mx-auto">
+    <div className="p-4 flex flex-col gap-8 mx-auto">
       <Header email={session.user.email} />
       <HomePage />
     </div>

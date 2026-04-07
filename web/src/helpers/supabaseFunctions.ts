@@ -24,7 +24,7 @@ export const fetchVideos = async (): Promise<SubscriptionVideoView[]> => {
       .from('subscription_videos')
       .select('*')
       .order('published_at', { ascending: false })
-      .limit(20)
+      .limit(50)
 
     if (vidError) throw vidError
 
