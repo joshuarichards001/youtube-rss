@@ -16,6 +16,9 @@ interface AppState {
   setVideos: (videos: SubscriptionVideoView[]) => void
   setLoading: (loading: boolean) => void
   setShowShorts: (showShorts: boolean) => void
+  hasMoreVideos: boolean
+  setHasMoreVideos: (hasMore: boolean) => void
+  appendVideos: (videos: SubscriptionVideoView[]) => void
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
   setProgress: (progress: AppState['progress']) => void
@@ -28,6 +31,9 @@ export const useAppStore = create<AppState>((set) => ({
   videos: [],
   loading: false,
   showShorts: false,
+  hasMoreVideos: true,
+  setHasMoreVideos: (hasMoreVideos) => set({ hasMoreVideos }),
+  appendVideos: (newVideos) => set((state) => ({ videos: [...state.videos, ...newVideos] })),
   sidebarOpen: false,
   progress: { status: 'idle', processed: 0, total: 0, message: '' },
   setSession: (session) => set({ session }),

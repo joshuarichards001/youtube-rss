@@ -52,7 +52,7 @@ export const SubscriptionList = () => {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:block w-64 shrink-0 bg-base-200 rounded-xl overflow-y-auto max-h-[calc(100vh-8rem)]">
+      <aside className="hidden lg:block w-64 shrink-0 bg-base-200 rounded-xl overflow-y-auto self-start sticky top-6 max-h-[calc(100vh-3rem)]">
         {content}
       </aside>
 

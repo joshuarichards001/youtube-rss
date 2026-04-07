@@ -18,13 +18,13 @@ export const fetchVideosByChannel = async (channelId: string): Promise<Subscript
   }
 }
 
-export const fetchVideos = async (): Promise<SubscriptionVideoView[]> => {
+export const fetchVideos = async (offset = 0, limit = 50): Promise<SubscriptionVideoView[]> => {
   try {
     const { data: vids, error: vidError } = await supabase
       .from('subscription_videos')
       .select('*')
       .order('published_at', { ascending: false })
-      .limit(50)
+      .range(offset, offset + limit - 1)
 
     if (vidError) throw vidError
 

@@ -4,7 +4,7 @@ import { fetchYouTubeSubscriptions } from '../helpers/youtubeAPI'
 import { useAppStore } from '../store/useAppStore'
 
 export const useSubscriptionSync = () => {
-  const { session, setSubscriptions, setLoading, setVideos, setProgress } = useAppStore()
+  const { session, setSubscriptions, setLoading, setVideos, setProgress, setHasMoreVideos } = useAppStore()
   const lastSyncedToken = useRef<string | null>(null)
   const eventSourceRef = useRef<EventSource | null>(null)
 
@@ -29,7 +29,10 @@ export const useSubscriptionSync = () => {
           setProgress(data)
 
           if (data.status === 'completed') {
-            fetchVideos().then(setVideos)
+            fetchVideos().then((vids) => {
+              setVideos(vids)
+              setHasMoreVideos(vids.length === 50)
+            })
             setTimeout(() => {
               setProgress({ status: 'idle', processed: 0, total: 0, message: '' })
             }, 5000)
@@ -65,7 +68,10 @@ export const useSubscriptionSync = () => {
       fetchYouTubeSubscriptions(currentToken, session.access_token)
         .then((subs) => {
           setSubscriptions(subs)
-          fetchVideos().then((videos) => setVideos(videos))
+          fetchVideos().then((vids) => {
+            setVideos(vids)
+            setHasMoreVideos(vids.length === 50)
+          })
         })
         .finally(() => setLoading(false))
     }

@@ -1,4 +1,6 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { fetchVideos } from '../helpers/supabaseFunctions'
 import { useAppStore } from '../store/useAppStore'
 
 const isShort = (url: string) => url.includes('/shorts/')
@@ -8,7 +10,36 @@ export const VideoGrid = () => {
   const loading = useAppStore((state) => state.loading)
   const showShorts = useAppStore((state) => state.showShorts)
   const setShowShorts = useAppStore((state) => state.setShowShorts)
+  const hasMoreVideos = useAppStore((state) => state.hasMoreVideos)
+  const appendVideos = useAppStore((state) => state.appendVideos)
+  const setHasMoreVideos = useAppStore((state) => state.setHasMoreVideos)
   const navigate = useNavigate()
+  const [loadingMore, setLoadingMore] = useState(false)
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMoreVideos) return
+    setLoadingMore(true)
+    const newVideos = await fetchVideos(videos.length)
+    if (newVideos.length < 50) setHasMoreVideos(false)
+    appendVideos(newVideos)
+    setLoadingMore(false)
+  }, [loadingMore, hasMoreVideos, videos.length, appendVideos, setHasMoreVideos])
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore()
+      },
+      { rootMargin: '200px' },
+    )
+
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [loadMore])
 
   const filteredVideos = showShorts ? videos : videos.filter((v) => !isShort(v.video_url))
 
@@ -26,7 +57,7 @@ export const VideoGrid = () => {
           />
         </label>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6">
         {filteredVideos.map((video) => (
           <div
             key={video.video_id}
@@ -59,6 +90,12 @@ export const VideoGrid = () => {
           </div>
         )}
       </div>
+      {hasMoreVideos && <div ref={sentinelRef} className="h-1" />}
+      {loadingMore && (
+        <div className="flex justify-center py-6">
+          <span className="loading loading-spinner loading-md" />
+        </div>
+      )}
     </div>
   )
 }
